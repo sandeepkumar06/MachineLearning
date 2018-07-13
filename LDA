@@ -1,0 +1,103 @@
+
+import pandas as pd 
+#import numpy as np 
+from sklearn import linear_model
+#from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+
+dataset = pd.read_csv('signaldataset3.csv')
+df_x = dataset.iloc[:, 0:10].values
+df_y = dataset.iloc[:, 10].values
+df_y=df_y.astype('int')
+print(dataset)
+
+reg = linear_model.LinearRegression()
+x_train,x_test,y_train,y_test = train_test_split(df_x,df_y,test_size=0.2,random_state=4)
+reg.fit(x_train,y_train)
+
+print(reg.score(x_test,y_test))
+
+print(df_x.shape)
+
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+#applying PCA
+lda = LinearDiscriminantAnalysis(n_components=2)
+x = lda.fit(df_x,df_y).transform(df_x)
+print (x)
+
+plt.title('Linear Discriminant Analysis')
+plt.scatter(x=x[:,0], y=x[:,1],s=30,alpha=0.5)
+plt.scatter(df_x[:, 0], df_x[:, 1],s=30,alpha=0.2)
+plt.axis('equal');
+plt.title('Plotting of data using LDA components')
+plt.xlabel('LD1')
+plt.ylabel('LD2')
+plt.show()  
+
+# Print the number of features
+print('Original number of features: %s ', str(df_x.shape[1]))
+print('Reduced number of features: %s', str(x.shape[1]))
+
+## View the ratio of explained variance
+print('explained variance ratio : %s ', str(lda.explained_variance_ratio_))
+
+#finding Linear Regression after LDA
+
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+# Fit on training set only.
+scaler.fit(x_train)
+# Apply transform to both the training set and the test set.
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test)
+
+# Make an instance of the Model
+
+lda.fit(x_train,y_train)
+#print (lda.n_components)
+
+x_train = lda.transform(x_train)
+x_test = lda.transform(x_test)
+
+#finding Linear Regression after PCA
+reg = linear_model.LinearRegression()
+
+reg.fit(x_train,y_train)
+
+print(reg.score(x_test,y_test))
+print(reg.predict(x_test))
+
+# Create and run an LDA
+lda = LinearDiscriminantAnalysis(n_components=2)
+X_lda = lda.fit(df_x,df_y)
+#Create List Of Explained Variances
+# Create array of explained variance ratios
+lda_var_ratios = lda.explained_variance_ratio_
+
+#Create Function Calculating Number Of Components Required To Pass Threshold
+# Create a function
+
+    # Set initial variance explained so far
+total_variance = 0.0
+    
+    # Set initial number of features
+n_components = 0
+
+goal_var= 0.95
+    # For the explained variance of each feature:
+for explained_variance in lda_var_ratios:
+        
+        # Add the explained variance to the total
+        total_variance += explained_variance
+        
+        # Add one to the number of components
+        n_components += 1
+        
+        # If we reach our goal level of explained variance
+        if total_variance >= goal_var:
+            # End the loop
+            break
+            
+    # Return the number of components
+print (n_components)
