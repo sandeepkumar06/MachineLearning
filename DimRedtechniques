@@ -1,0 +1,180 @@
+import pandas as pd 
+
+from sklearn import linear_model
+#from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.decomposition import PCA,TruncatedSVD
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
+import matplotlib.pyplot as plt
+
+
+dataset = pd.read_csv('signaldataset3.csv')
+df_x = dataset.iloc[:, 0:10].values
+df_y = dataset.iloc[:, 10].values
+df_y=df_y.astype('int')
+
+print(dataset)
+
+
+reg = linear_model.LinearRegression()
+x_train,x_test,y_train,y_test = train_test_split(df_x,df_y,test_size=0.2,random_state=4)
+reg.fit(x_train,y_train)
+
+
+print(reg.score(x_test,y_test))
+print(df_x.shape)
+
+def calculate():
+     operation = input('''
+Please type the Dimension Reduction Tecnique 
+1. for Principal Component Analysis
+2. for Linear Discriminat Analysis
+3. for Singular Value Decomposition
+''')
+    
+
+# Take input from the user 
+ 
+     if operation == '1':
+    # time domain features 
+      print ("Principal Component Analysis is applied on the dataset :")
+    
+      #applying PCA
+      pca = PCA(n_components=2,whiten='True')
+      x = pca.fit(df_x).transform(df_x)
+      print (x)
+      # Print the number of features
+      print('Original number of features: %s ', str(df_x.shape[1]))
+      print('Reduced number of features: %s', str(x.shape[1]))
+
+      # View the ratio of explained variance
+      print('explained variance ratio : %s ', str(pca.explained_variance_ratio_))
+
+      print(pca.explained_variance_)
+      X_new = pca.inverse_transform(x)
+      plt.scatter(df_x[:, 0], df_x[:, 1],s=7,alpha=0.2)
+      plt.scatter(X_new[:, 0], X_new[:, 1],s=7, alpha=0.8)
+      plt.axis('equal');
+      plt.title('Plotting of data using PCA components')
+      plt.show()  
+      #finding Linear Regression after PCA
+      x_train,x_test,y_train,y_test = train_test_split(df_x,df_y,test_size=0.2,random_state=4)
+
+      from sklearn.preprocessing import StandardScaler
+      scaler = StandardScaler()
+      # Fit on training set only.
+      scaler.fit(x_train)
+      # Apply transform to both the training set and the test set.
+      x_train = scaler.transform(x_train)
+      x_test = scaler.transform(x_test)
+  
+      reg = linear_model.LinearRegression()
+
+      reg.fit(x_train,y_train)
+
+      print(reg.score(x_test,y_test))
+      print(reg.predict(x_test))
+
+    
+      
+
+     elif operation == '2' :
+      # frequency domain features
+      print ("Linear Discriminant Analysis is applied on the dataset :")
+      #applying LDA
+      lda = LinearDiscriminantAnalysis(n_components=2)
+      x = lda.fit(df_x,df_y).transform(df_x)
+      print (x)
+      plt.title('Linear Discriminant Analysis')
+      plt.scatter(x=x[:,0], y=x[:,1],s=30,alpha=0.5)
+      plt.scatter(df_x[:, 0], df_x[:, 1],s=30,alpha=0.2)
+      plt.axis('equal');
+      plt.title('Plotting of data using LDA components')
+      plt.xlabel('LD1')
+      plt.ylabel('LD2')
+      plt.show()  
+
+      # Print the number of features
+      print('Original number of features: %s ', str(df_x.shape[1]))
+      print('Reduced number of features: %s', str(x.shape[1]))
+
+      #View the ratio of explained variance
+      print('explained variance ratio : %s ', str(lda.explained_variance_ratio_))
+
+      #finding Linear Regression after LDA
+      x_train,x_test,y_train,y_test = train_test_split(df_x,df_y,test_size=0.2,random_state=4)
+     
+      from sklearn.preprocessing import StandardScaler
+      scaler = StandardScaler()
+      # Fit on training set only.
+      scaler.fit(x_train)
+      # Apply transform to both the training set and the test set.
+      x_train = scaler.transform(x_train)
+      x_test = scaler.transform(x_test)
+
+      # Make an instance of the Model
+
+      lda.fit(x_train,y_train)
+      #print (lda.n_components)
+
+      x_train = lda.transform(x_train)
+      x_test = lda.transform(x_test)
+
+      #finding Linear Regression after PCA
+      reg = linear_model.LinearRegression()
+
+      reg.fit(x_train,y_train)
+
+      print(reg.score(x_test,y_test))
+      print(reg.predict(x_test))
+      
+     elif operation == '3' :
+      # frequency domain features
+      print ("Singular Value Decompostion is applied on the dataset :")
+      
+      #applying SVD
+      svd= TruncatedSVD(n_components = 2)
+      y=svd.fit(df_x).transform(df_x)
+      print(y)
+
+      plt.title('Plotting of data using SVD')
+      plt.scatter(x=y[:,0], y=y[:,1],s=30,alpha=0.5) #blue
+      plt.scatter(df_x[:, 0], df_x[:, 1],s=30,alpha=0.2) #orange
+      plt.axis('equal');
+
+      plt.show()  
+
+      # Print the number of features
+      print('Original number of features: %s ', str(df_x.shape[1]))
+      print('Reduced number of features: %s', str(y.shape[1]))
+      #View the ratio of explained variance
+      print('explained variance ratio : %s ', str(svd.explained_variance_ratio_))
+      print(svd.explained_variance_)
+      #finding Linear Regression after SVD
+      x_train,x_test,y_train,y_test = train_test_split(df_x,df_y,test_size=0.2,random_state=4)
+      from sklearn.preprocessing import StandardScaler
+      scaler = StandardScaler()
+      # Fit on training set only.
+      scaler.fit(x_train)
+      # Apply transform to both the training set and the test set.
+      x_train = scaler.transform(x_train)
+      x_test = scaler.transform(x_test)
+
+      # Make an instance of the Model
+      svd.fit(x_train)
+      x_train = svd.transform(x_train)
+      x_test = svd.transform(x_test)
+      #finding Linear Regression after PCA
+      reg = linear_model.LinearRegression()
+
+      reg.fit(x_train,y_train)
+
+      print(reg.score(x_test,y_test))
+      print(reg.predict(x_test))
+       
+     else:
+       print('You have not typed a valid operator, please run the program again.')
+   
+# Caltl calculate() outside of the function
+calculate()
