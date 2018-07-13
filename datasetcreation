@@ -1,0 +1,369 @@
+m=int(input("enter the number of rows"))
+n=int(input("enter the number of columns"))
+
+Mat = []
+
+for i in range (0,m):
+      Mat.append([])
+for i in range (0,m):
+    for j in range (0,n):
+         Mat[i].append(j)
+         Mat[i] [j] = 0
+
+
+import random
+for i in range(0,m):
+  for j in range(0,n):
+    
+   value=random.uniform(-500,999)
+   Mat [i] [j] = int(value)
+
+print(Mat)
+
+
+def calculate():
+     operation = input('''
+Please type in the math operation you would like to complete:
+1 for time domain features
+2 for frequency domain features
+''')
+    
+
+# Take input from the user 
+ 
+     if operation == '1':
+    # time domain features 
+      print ("Time domain features are as follows :")
+      
+      import numpy as np
+
+      for i in range (0,m):
+        a=(np.max(Mat[i]))
+        print ("Maximum number of every row is : ",a)
+      for i in range (0,m):   
+        b=(np.min(Mat[i]))
+        print ("Minimum number of every row is : ",b)
+      for i in range (0,m):
+        c=(np.std(Mat[i]))
+        print ("SD is",c) 
+      for i in range (0,m):
+       d=(np.mean(Mat[i]))
+       print ("mean of each row is :",d) 
+      for i in range (0,m):
+       e=(np.median(Mat[i]))
+       print ("median of each row is " ,e)    
+      for i in range (0,m):
+       g=(np.var(Mat[i]))
+       print ("var of each row is " ,g)
+      
+      from scipy.stats import kurtosis, skew
+      for i in range (0,m):
+       x = np.random.normal(-500,999,m)
+       print( 'skewness of normal distribution: {}'.format( skew(x) ))
+      
+      for i in range (0,m):
+       x = np.random.normal(-500,999,m)
+       print( 'excess kurtosis of normal distribution: {}'.format( kurtosis(x) ))
+
+      from numpy import mean, sqrt, square
+      for i in range (0,m):
+       rms = sqrt(mean(square(Mat[i])))
+       print ("rms of each row is " ,rms)
+      
+      import numpy
+      for i in range (0,m):
+       absval=max(numpy.absolute(Mat[i]))
+       print ("abs value for each row " ,absval)
+      
+      import matplotlib.pyplot as plt
+      s1=np.random.rand(m,n)
+      histogram=plt.hist(s1)
+      print ("histogram is " , histogram)   
+      
+     elif operation == '2' :
+      # frequency domain features
+      print ("frequency domain features are as follows :")
+      import numpy as np
+
+      for i in range (0,m):
+        maxamp=(np.max(Mat[i]))
+        print ("Maximum Amplitude of every row is : ",maxamp)
+        
+      for i in range (0,m):
+        minamp=(np.min(Mat[i]))
+        print ("Minimum Amplitude of every row is : ",minamp)
+    
+      for i in range (0,m):
+       mean=(np.mean(Mat[i]))
+       print ("mean frequency of each row is :",mean)    
+       
+      for i in range (0,m):
+       median=(np.median(Mat[i]))
+       print ("median freq of each row is :",median)
+       
+      for i in range (0,m):
+       peak=(np.max(Mat[i]))
+       print ("peak frequency of every row is : ",peak)
+      
+       
+     else:
+       print('You have not typed a valid operator, please run the program again.')
+   
+# Caltl calculate() outside of the function
+calculate()
+    
+#time domain features in excel sheet
+#open in excel sheet    
+import numpy as np
+f = open("maximum.txt","w")   #create add file in write mode\
+f.write("MAXIMUM")
+f.write("\n")
+for i in range (0,m):
+  f.write(str((np.max(Mat[i]))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()			#closing file object
+ 
+f = open("minimum.txt","w")   #create add file in write mode\
+f.write("MINIMUM")
+f.write("\n")
+for i in range (0,m):
+  f.write(str((np.min(Mat[i]))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()			#closing file object
+ 
+ 
+f = open("sd.txt","w")   #create add file in write mode\
+f.write("Std Deviation")
+f.write("\n")
+for i in range (0,m):
+  f.write(str((np.std(Mat[i]))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()			#closing file object
+
+f = open("mean.txt","w")   #create add file in write mode\
+f.write("Mean")
+f.write("\n")
+for i in range (0,m):
+  f.write(str((np.mean(Mat[i]))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()			#closing file object
+
+f = open("median.txt","w")   #create add file in write mode\
+f.write("Median")
+f.write("\n")
+for i in range (0,m):
+  f.write(str((np.median(Mat[i]))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()			#closing file object
+
+f = open("variance.txt","w")   #create add file in write mode\
+f.write("Variance")
+f.write("\n")
+for i in range (0,m):
+  f.write(str((np.var(Mat[i]))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()			#closing file object
+
+from numpy import mean, sqrt, square
+f = open("rms.txt","w")   #create add file in write mode\
+f.write("RMS")
+f.write("\n")
+for i in range (0,m):
+  f.write(str(sqrt(mean(square(Mat[i])))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()			#closing file object
+
+import numpy
+f = open("absval.txt","w")   #create add file in write mode\
+f.write("Abs Value")
+f.write("\n")
+for i in range (0,m):
+  f.write(str(max(numpy.absolute(Mat[i]))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()		
+
+#shifting from text file to excel file for tdf
+       
+import xlwt
+wbk = xlwt.Workbook()
+sheet1 = wbk.add_sheet('sheet1')
+row = 0 # row counter
+col = 0
+
+f = open('maximum.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet1.write(row,col,c)
+    row += 1
+wbk.save('maximum.xls')
+
+row = 0 # row counter
+col = 0
+f = open('minimum.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet1.write(row,col+1,c)
+    row += 1
+wbk.save('minimum.xls')
+
+row = 0 # row counter
+col = 0
+f = open('sd.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet1.write(row,col+2,c)
+    row += 1
+wbk.save('sd.xls')
+
+row = 0 # row counter
+col = 0
+f = open('mean.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet1.write(row,col+3,c)
+    row += 1
+wbk.save('mean.xls')
+
+row = 0 # row counter
+col = 0
+f = open('median.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet1.write(row,col+4,c)
+    row += 1
+wbk.save('median.xls')
+
+row = 0 # row counter
+col = 0
+f = open('variance.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet1.write(row,col+5,c)
+    row += 1
+wbk.save('variance.xls')
+
+row = 0 # row counter
+col = 0
+f = open('rms.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet1.write(row,col+6,c)
+    row += 1
+wbk.save('rms.xls')
+
+row = 0 # row counter
+col = 0
+f = open('absval.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet1.write(row,col+7,c)
+    row += 1
+wbk.save('absval.xls')
+
+#frequency domain features in excel
+
+import numpy as np
+f = open("maxfreq.txt","w")   #create add file in write mode\
+f.write("MAX freq")
+f.write("\n")
+for i in range (0,m):
+  f.write(str((np.max(Mat[i]))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()			#closing file object
+ 
+f = open("minfreq.txt","w")   #create add file in write mode\
+f.write("MIN freq")
+f.write("\n")
+for i in range (0,m):
+  f.write(str((np.min(Mat[i]))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()		
+
+f = open("meanfreq.txt","w")   #create add file in write mode\
+f.write("Mean freq")
+f.write("\n")
+for i in range (0,m):
+  f.write(str((np.mean(Mat[i]))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()			#closing file object
+
+f = open("medianfreq.txt","w")   #create add file in write mode\
+f.write("Median freq")
+f.write("\n")
+for i in range (0,m):
+  f.write(str((np.median(Mat[i]))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()	
+
+
+f = open("peakfreq.txt","w")   #create add file in write mode\
+f.write("Peak Freq")
+f.write("\n")
+for i in range (0,m):
+  f.write(str((np.max(Mat[i]))))  #writes o/p to add.txt file
+  f.write("\n")
+f.close()			#closing file object	
+
+#shifting from text file to excel file for fdf
+
+import xlwt
+wbk = xlwt.Workbook()
+sheet2 = wbk.add_sheet('sheet2')
+row = 0 # row counter
+col = 0
+
+f = open('maxfreq.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet2.write(row,col,c)
+    row += 1
+wbk.save('maxfreq.xls')
+
+row = 0 # row counter
+col = 0
+f = open('minfreq.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet2.write(row,col+1,c)
+    row += 1
+wbk.save('minfreq.xls')
+
+row = 0 # row counter
+col = 0
+f = open('meanfreq.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet2.write(row,col+2,c)
+    row += 1
+wbk.save('meanfreq.xls')
+
+row = 0 # row counter
+col = 0
+f = open('medianfreq.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet2.write(row,col+3,c)
+    row += 1
+wbk.save('medianfreq.xls')
+
+row = 0 # row counter
+col = 0
+f = open('peakfreq.txt')
+for line in f:
+    L = line.split('\t')
+    for c in L:
+        sheet2.write(row,col+4,c)
+    row += 1
+wbk.save('peakfreq.xls')
